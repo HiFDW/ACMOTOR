@@ -1,0 +1,17 @@
+#Windowns:
+Thumbs.db
+Desktop.ini
+
+#MDK
+*.map
+*.lst
+*.txt
+*.o
+*.d
+*.crf
+*.htm
+*.axf
+*.hex
+*.sct
+*.lnp
+*.dep
