@@ -43,9 +43,9 @@ void USART_Config(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 
-	RCC_APB2PeriphClockCmd(DEBUG_USART_GPIO_CLK, ENABLE);
-	RCC_APB1PeriphClockCmd(DEBUG_USART_CLK, ENABLE);
 
+	RCC_APB1PeriphClockCmd(DEBUG_USART_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(DEBUG_USART_GPIO_CLK|RCC_APB2Periph_AFIO, ENABLE);
 	GPIO_InitStructure.GPIO_Pin = DEBUG_USART_TX_GPIO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -63,13 +63,13 @@ void USART_Config(void)
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(DEBUG_USARTx, &USART_InitStructure);
 	
-	NVIC_USART_Configuration();
+//	NVIC_USART_Configuration();
 	
 
 //	USART_ITConfig(DEBUG_USARTx, USART_IT_RXNE, ENABLE);	
 	
 	USART_Cmd(DEBUG_USARTx, ENABLE);		
-	USART_ClearFlag(USART1, USART_FLAG_TC);     
+//	USART_ClearFlag(DEBUG_USARTx, USART_FLAG_TC);     
 }
 
 /*****************  ·¢ËÍÒ»¸ö×Ö·û **********************/

@@ -58,14 +58,6 @@ static void TIM2_Mode_Config(u16 arr,u16 psc)
 	//TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
 
 	//TIM_Cmd(TIM2, ENABLE);
-	
-	
-//    /* PCLK2 = HCLK */  72Mhz
-//    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
-//    
-//    /* PCLK1 = HCLK/2 */ =36Mhz
-//    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
-	
 }
 
 
@@ -73,9 +65,9 @@ static void TIM2_Mode_Config(u16 arr,u16 psc)
 
 static void TIM3_Mode_Config(void)
 {
-	  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;		//10us一次中断
+	  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;		//100us一次中断
     RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM3, ENABLE);	
-    TIM_TimeBaseStructure.TIM_Period=(10-1);
+    TIM_TimeBaseStructure.TIM_Period=(100-1);
     TIM_TimeBaseStructure.TIM_Prescaler= 71;	
     TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;		//时钟分频不为1，TIM时钟为72M
     TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up; 		
@@ -106,28 +98,28 @@ void TIM3_Init(u16 arr,u16 psc)
 
 
 
-void  TIM2_RUN(void)
+void  TIM2_Run(void)
 {
 //	TIM_ClearFlag(TIM2, TIM_FLAG_Update);
-//	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
+	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
 	  TIM_Cmd(TIM2, ENABLE);
 }
 
-void  TIM2_STOP(void)
+void  TIM2_Stop(void)
 {
 //	TIM_ClearFlag(TIM2, TIM_FLAG_Update);
-//	TIM_ITConfig(TIM2,TIM_IT_Update,DISABLE);
+	TIM_ITConfig(TIM2,TIM_IT_Update,DISABLE);
 	TIM_Cmd(TIM2, DISABLE);
 }
 
-void TIM3_RUN(void)
+void TIM3_Run(void)
 {
 	TIM_ClearFlag(TIM3, TIM_FLAG_Update);
 	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE);
 	TIM_Cmd(TIM3, ENABLE);
 }
 
-void TIM3_STOP(void)
+void TIM3_Stop(void)
 {
 	TIM_ClearFlag(TIM3, TIM_FLAG_Update);
 	TIM_ITConfig(TIM3,TIM_IT_Update,DISABLE);

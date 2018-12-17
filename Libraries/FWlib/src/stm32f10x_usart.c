@@ -230,14 +230,18 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
 
 /*---------------------------- USART BRR Configuration -----------------------*/
   /* Configure the USART Baud Rate -------------------------------------------*/
-  RCC_GetClocksFreq(&RCC_ClocksStatus);
+
+//RCC_GetClocksFreq(&RCC_ClocksStatus);
+
   if (usartxbase == USART1_BASE)
   {
-    apbclock = RCC_ClocksStatus.PCLK2_Frequency;
+   // apbclock = RCC_ClocksStatus.PCLK2_Frequency;
+		apbclock = 72000000;
   }
   else
   {
-    apbclock = RCC_ClocksStatus.PCLK1_Frequency;
+   // apbclock = RCC_ClocksStatus.PCLK1_Frequency;
+		apbclock = 36000000;
   }
   
   /* Determine the integer part */

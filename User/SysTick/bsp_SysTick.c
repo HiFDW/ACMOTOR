@@ -2,15 +2,9 @@
 #include "bsp_SysTick.h"
 #include "core_cm3.h"
 #include "misc.h"
-
-
+#include "mycommon.h"
 
    
-/* 全局变量声明*/
-st_systime g_systime={0,0}; //系统时间
-//2^32 /3600/24/365 =  136.19年。 
-
- 
 /**
   * @brief  启动系统滴答定时器 SysTick
   * @param  无

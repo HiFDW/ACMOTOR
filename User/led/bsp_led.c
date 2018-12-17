@@ -24,7 +24,7 @@ void LED_GPIO_Config(void)
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
 		GPIO_Init(LED1_GPIO_PORT, &GPIO_InitStructure);	
 		
-		GPIO_SetBits(LED1_GPIO_PORT, LED1_GPIO_PIN);   //πÿ±’LED
+		GPIO_ResetBits(LED1_GPIO_PORT, LED1_GPIO_PIN);   //µ„¡¡LED
 		
 }
 

@@ -30,6 +30,7 @@
 #include "bsp_led.h" 
 #include "bsp_Tim.h" 
 #include "bsp_SysTick.h"
+#include "bsp_exti.h"
 
 
 /** @addtogroup STM32F10x_StdPeriph_Template
@@ -150,11 +151,12 @@ void SysTick_Handler(void)
 {
 	static u32 usec  = 0;
 	g_systime.usec++;
+
 	if(usec++ >= 1000000)
 	{
 		usec = 0;	
 		g_systime.sec++;
-		
+		g_s_update=1;
 	} 
 }
 
@@ -189,7 +191,9 @@ void TIM2_IRQHandler(void)
 	else if(g_key_no==1)
 		g_tim_cnt.key1_cnt ++;
 	else if (g_key_no==2)
+	{
 		g_tim_cnt.key2_cnt ++;
+	}		
 	else if (g_key_no==3)
 		g_tim_cnt.key3_cnt ++;
 
@@ -201,7 +205,11 @@ void TIM3_IRQHandler(void)
 	if(TIM_GetITStatus(TIM3, TIM_IT_Update)!=RESET)
 	{
 		  TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-			g_zero_cnt++;
+		  if(g_ZeroTime.Zero_low_flag==1)
+			{
+				g_ZeroTime.Zero_low_cnt++;
+				
+			}
 	}
 
 }
@@ -246,30 +254,77 @@ void EXTI4_IRQHandler(void)
 }
 
 //交流过零检测
+//   _____
+//  |    |
+/*__|    |__    */
+//
 void EXTI9_5_IRQHandler(void)
 {
-	static u8 s_Cnt=0;
-	uint16_t key_value=0;
+	uint16_t key_value=0xff7f;
 
 	if (EXTI_GetITStatus(EXTI_Line7) != RESET)
 	{
 			EXTI_ClearITPendingBit(EXTI_Line7); //清除标志
 		
 			key_value = GPIO_ReadInputData(GPIOA);  //PA7
-			//常态为低电平。上升沿为过零开始，下降沿为过零结束。
-		  if(key_value&0x0080)  //交流过零开始
+		
+		  //下降沿交流过零开始，上升沿交流过零结束
+		  if((key_value&0x0080)==0)  //交流过零
 			{
-				TIM3_RUN();
-				g_zero_cnt=0;
-				g_zero_flag=0;
+				MOTO_Stop ();
+				TIM3_Run();
+				g_ZeroTime.Zero_low_cnt=0;
+			  g_ZeroTime.Zero_low_flag=1;
+
 			}
-			else
-			{
-				TIM3_STOP();
-				g_zero_flag=1;
+			else if((key_value&0x0080)==1)
+			{	
+				TIM3_Stop();
+				g_ZeroTime.Zero_low_flag =2;
+
+
+				if(g_Zero_Hz>100)
+				{
+					g_Zero_Hz=0;
+				}
+
+//extern u8 nmOrMxx;     //nm=1,Mxx=0
+
+				if(g_moto_enable)
+				{
+					 if(g_nmOrMxx==0)
+					 {
+						  Zero_Cross( g_moto_power);
+					 }
+					 else if(g_nmOrMxx==1)
+					 {
+						  Zero_Cross( g_moto_power*2);
+					 }
+					
+				}
+				
+				
+				g_Zero_Hz++;
 				
 			}
+
 		
+			//常态为低电平。上升沿为过零开始，下降沿为过零结束。
+//		  if(key_value&0x0080)  //交流过零开始
+//			{
+//				TIM3_STOP();	
+//				g_zero_cnt=0;
+//				g_zero_flag=0;
+//				//过零开始停止PWM输出
+//			}
+//			else
+//			{
+//				g_zero_cnt=0;
+//				TIM3_RUN();
+//				g_zero_flag=1;
+//			//过零结束启动PWM输出
+//			}
+//		
 			
 	}
 }
@@ -281,27 +336,35 @@ void EXTI15_10_IRQHandler(void)
 
 	  if (EXTI_GetITStatus(EXTI_Line14) != RESET)
     {
-        EXTI_ClearITPendingBit(EXTI_Line14); //清除标志
+        EXTI_ClearITPendingBit(EXTI_Line14); //清除标志 //PB14.right
 
 		   	g_key_no = 1;
 			
-				TIM2_RUN();
+				TIM2_Run();
+			
+				g_tim_cnt.key1_cnt =0;
+			
     }
 		
 		if (EXTI_GetITStatus(EXTI_Line13) != RESET)
     {
-        EXTI_ClearITPendingBit(EXTI_Line13); //清除标志
+        EXTI_ClearITPendingBit(EXTI_Line13); //清除标志   //pb13.M
 
 			 	g_key_no = 2;
-				TIM2_RUN();
+				g_tim_cnt.key2_cnt=0;
+				TIM2_Run();
+		
     }
+		
 		if (EXTI_GetITStatus(EXTI_Line12) != RESET)
     {
         EXTI_ClearITPendingBit(EXTI_Line12); //清除标志
 
-			  g_key_no = 3;
+			  g_key_no = 3;                        //   left .pb12
 			
-				TIM2_RUN();
+				TIM2_Run();
+			
+				g_tim_cnt.key3_cnt=0;
     }
 		
 }

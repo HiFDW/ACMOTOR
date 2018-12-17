@@ -50,12 +50,12 @@
 
 
 void TIM2_Init(u16 arr,u16 psc);
-void TIM2_RUN(void);
-void TIM2_STOP(void);
+void TIM2_Run(void);
+void TIM2_Stop(void);
 
 void TIM3_Init(u16 arr,u16 psc);
-void TIM3_RUN(void);
-void TIM3_STOP(void);
+void TIM3_Run(void);
+void TIM3_Stop(void);
 
 #endif	/* __BSP_GENERALTIME_H */
 

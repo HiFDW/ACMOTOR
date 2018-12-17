@@ -9,8 +9,8 @@
 // 注意：用作ADC采集的IO必须没有复用，否则采集电压会有影响
 /********************ADC1输入通道（引脚）配置**************************/
 
-// PC1-通道11 独立IO
-#define    ADC_PIN                       GPIO_Pin_1
+//PA4
+#define    ADC_PIN                       GPIO_Pin_4
 #define    ADC_CHANNEL                   ADC_Channel_4
 #define    ADC_DMA_CHANNEL               DMA1_Channel1
 

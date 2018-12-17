@@ -7,9 +7,9 @@
 
 /* 定义LED连接的GPIO端口, 用户只需要修改下面的代码即可改变控制的LED引脚 */
 // PC13
-#define LED1_GPIO_PORT    	GPIOC			              
-#define LED1_GPIO_CLK 	    RCC_APB2Periph_GPIOC		
-#define LED1_GPIO_PIN		    GPIO_Pin_13			        
+#define LED1_GPIO_PORT    	GPIOB			              
+#define LED1_GPIO_CLK 	    RCC_APB2Periph_GPIOB		
+#define LED1_GPIO_PIN		    GPIO_Pin_8			        
 
 
 /** the macro definition to trigger the led on or off 
@@ -36,5 +36,4 @@
 #define LED1_ON			   digitalLo(LED1_GPIO_PORT,LED1_GPIO_PIN)
 
 void LED_GPIO_Config(void);
-
 #endif /* __LED_H */
